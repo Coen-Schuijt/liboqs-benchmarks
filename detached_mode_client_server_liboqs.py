@@ -107,10 +107,10 @@ def run_client():
 	# Debug mode
 
 	# Default = 30
-	duration = 1
+	duration = 30
 
 	# Default = 70
-	sleep = 2
+	sleep = 70
 
 	# For each signature algorithm ...
 	for e, sig_alg in enumerate(sig_algs):
