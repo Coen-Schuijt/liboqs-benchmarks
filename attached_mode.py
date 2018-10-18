@@ -68,6 +68,15 @@ def generate_ssc():
 	print("\n[ Creating Self Signed Certificate (ECDH-RSA) ]")
 	os.system("docker exec -i -t benchmark-container bash -c 'openssl/apps/openssl ecparam -out server-ecdh-param.pem -name prime256v1 && openssl genpkey -paramfile server-ecdh-param.pem -out server-ecdh-key.pem && openssl pkey -in server-ecdh-key.pem -pubout -out server-ecdh-pubkey.pem && openssl genrsa -out server-ecdh-rsakey.pem 2048 && openssl req -new -key server-ecdh-rsakey.pem -subj /C=NL/ST=Amsterdam/L=Amsterdam/O=OS3/OU=RESEARCH/CN=os3.nl -out server-ecdh-rsa.csr && openssl x509 -req -in server-ecdh-rsa.csr -CAkey server-rsa.key -CA server-rsa.cert -force_pubkey server-ecdh-pubkey.pem -out server-ecdh-cert.cert -CAcreateserial'")
 
+	# Define list of signature algorithms
+	sig_algs = ["rsa", "picnicl1fs", "qteslaI", "qteslaIIIsize", "qteslaIIIspeed"]
+
+	# Generate certificate for each of the signature algorithms
+	for sig_alg in sig_algs:
+		# Create Self Signed Certificate and key
+		print("\n[ Creating Self Signed Certificate ({}) ]".format(sig_alg))
+		os.system("docker exec -i -t benchmark-container bash -c 'openssl/apps/openssl req -x509 -new -newkey {0} -keyout {0}.key -out {0}.crt -nodes -subj \"/C=NL/ST=Amsterdam/L=Amsterdam/O=OS3/OU=RESEARCH/CN=os3.nl\" -days 365 -config openssl/apps/openssl.cnf'".format(sig_alg))
+
 	return
 
 def generate_file_loc(filename):
