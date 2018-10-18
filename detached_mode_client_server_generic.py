@@ -58,11 +58,11 @@ def generate_ssc():
 
 	# Create Self Signed Certificate for DH-DSS.
 	print("\n[ Creating Self Signed Certificate (DH-DSS) ]")
-	os.system("docker exec -i -t benchmark-container bash -c 'openssl dhparam -out server-dh-param.pem 2048 && openssl genpkey -paramfile server-dh-param.pem -out server-dh-dss-key.pem && openssl pkey -in server-dh-dss-key.pem -pubout -out server-dh-dss-pubkey.pem && openssl dsaparam -out server-dss-param.pem 2048 && openssl gendsa -out server-dss-key.pem server-dss-param.pem && openssl req -new -key server-dss-key.pem -subj /C=NL/ST=Amsterdam/L=Amsterdam/O=OS3/OU=RESEARCH/CN=os3.nl -out server-dss-req.pem && openssl x509 -req -in server-dss-req.pem -signkey server-dss-key.pem -out server-dss-cert.cert && openssl req -new -key server-dss-key.pem -subj /C=NL/ST=Amsterdam/L=Amsterdam/O=OS3/OU=RESEARCH/CN=os3.nl -out server-dh-dss.csr && openssl x509 -req -in server-dh-dss.csr -CAkey server-dss-key.pem -CA server-dss-cert.cert -force_pubkey server-dh-dss-pubkey.pem -out server-dh-dss-cert.cert -CAcreateserial'")
-
+	os.system("docker exec -i -t benchmark-container bash -c 'openssl dhparam -out server-dh-dss-param.pem 2048 && openssl genpkey -paramfile server-dh-dss-param.pem -out server-dh-dss-key.pem && openssl pkey -in server-dh-dss-key.pem -pubout -out server-dh-dss-pubkey.pem && openssl dsaparam -out server-dss-param.pem 2048 && openssl gendsa -out server-dss-key.pem server-dss-param.pem && openssl req -new -key server-dss-key.pem -subj /C=NL/ST=Amsterdam/L=Amsterdam/O=OS3/OU=RESEARCH/CN=os3.nl -out server-dss-req.pem && openssl x509 -req -in server-dss-req.pem -signkey server-dss-key.pem -out server-dss-cert.cert && openssl req -new -key server-dss-key.pem -subj /C=NL/ST=Amsterdam/L=Amsterdam/O=OS3/OU=RESEARCH/CN=os3.nl -out server-dh-dss.csr && openssl x509 -req -in server-dh-dss.csr -CAkey server-dss-key.pem -CA server-dss-cert.cert -force_pubkey server-dh-dss-pubkey.pem -out server-dh-dss-cert.cert -CAcreateserial'")
+	
 	# Create Self Signed Certificate for DH-RSA.
 	print("\n[ Creating Self Signed Certificate (DH-RSA) ]")
-	os.system("docker exec -i -t benchmark-container bash -c 'openssl genpkey -paramfile server-dh-param.pem -out server-dh-key.pem && openssl pkey -in server-dh-key.pem -pubout -out server-dh-pubkey.pem && openssl genrsa -out server-dh-rsakey.pem 2048 && openssl req -new -key server-dh-rsakey.pem -subj /C=NL/ST=Amsterdam/L=Amsterdam/O=OS3/OU=RESEARCH/CN=os3.nl -out server-dh-rsa.csr && openssl x509 -req -in server-dh-rsa.csr -CAkey server-rsa.key -CA server-rsa.cert -force_pubkey server-dh-pubkey.pem -out server-dh-cert.cert -CAcreateserial'")
+	os.system("docker exec -i -t benchmark-container bash -c 'openssl dhparam -out server-dh-rsa-param.pem 2048 && openssl genpkey -paramfile server-dh-rsa-param.pem -out server-dh-rsa-key.pem && openssl pkey -in server-dh-rsa-key.pem -pubout -out server-dh-rsa-pubkey.pem && openssl genrsa -out server-dh-rsa-key.pem 2048 && openssl req -new -key server-dh-rsakey.pem -subj /C=NL/ST=Amsterdam/L=Amsterdam/O=OS3/OU=RESEARCH/CN=os3.nl -out server-dh-rsa.csr && openssl x509 -req -in server-dh-rsa.csr -CAkey server-rsa.key -CA server-rsa.cert -force_pubkey server-dh-rsa-pubkey.pem -out server-dh-cert.cert -CAcreateserial'")
 
 	# Create self signed certificate for ECDH-RSA.	
 	print("\n[ Creating Self Signed Certificate (ECDH-RSA) ]")
@@ -89,12 +89,12 @@ def run_server():
 
 	# Setup SSL/TLS server for [4447] DH-RSA.
 	print("\n[ Setting up SSL/TLS Server (DH-RSA) ... Listening on port 4447 ]")
-	os.system("docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_server -accept 4447 -cert server-dh-cert.cert -key server-dh-key.pem'")
+	os.system("docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_server -accept 4447 -cert server-dh-rsa-cert.cert -key server-dh-rsa-key.pem'")
 
 	# Setup SSL/TLS server for [4448] ECDH-RSA.
 	print("\n[ Setting up SSL/TLS Server (ECDH-RSA) ... Listening on port 4448 ]")
 	os.system("docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_server -accept 4448 -cert server-ecdh-cert.cert -key server-ecdh-key.pem'")
-	
+
 	# Setup SSL/TLS server for [4449] RSA.
 	print("\n[ Setting up SSL/TLS Server (RSA) ... Listening on port 4449 ]")
 	os.system("docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_server -accept 4449 -cert server-rsa-cert.pem'")
@@ -203,7 +203,7 @@ def run_client():
 	# Checks all items in the cipherlist and appends items to corresponding list.
 	for item in cipherlist:
 
-		# [4444] ECDSA.
+		# [4444] DSA.
 		if "ECDSA" in item:
 			generic_ecdsa_cipherlist.append(item)
 
@@ -225,24 +225,20 @@ def run_client():
 
 		# [----] SRP.
 		elif item.startswith("SRP"):
-			pass
-			# generic_srp_cipherlist.append(item)
+			generic_srp_cipherlist.append(item)
 
 		# [----] PSK.
 		elif item.startswith("PSK"):
-			pass
-			# generic_psk_cipherlist.append(item)
+			generic_psk_cipherlist.append(item)
 		
 		# [----] GOST.
 		elif item.startswith("GOST"):
-			pass
-			# generic_gost_cipherlist.append(item)
+			generic_gost_cipherlist.append(item)
 	
-		# [4450] All Others.
+		# [4449] All Others.
 		else:
 			generic_rsa_cipherlist.append(item)
 
-	# Print the ciphers to be tested.
 	print("\n[ Creating generic ECDSA cipherlist ]\n{}".format(generic_ecdsa_cipherlist))
 	print("\n[ Creating generic DH-DSS cipherlist ]\n{}".format(generic_dh_dss_cipherlist))
 	print("\n[ Creating generic DHE-DSS cipherlist ]\n{}".format(generic_dhe_dss_cipherlist))
@@ -250,22 +246,30 @@ def run_client():
 	print("\n[ Creating generic ECDH-RSA cipherlist ]\n{}".format(generic_ecdh_rsa_cipherlist))	
 	print("\n[ Creating generic RSA cipherlist ]\n{}".format(generic_rsa_cipherlist))
 
+	# Debug mode
+
+	# Default = 30
+	duration = 1
+
+	# Default = 70
+	sleep = 2
+
 	# Run benchmarks for generic [4444] ECDSA ciphers.
 	print("\n[> Running tests for generic_ecdsa_ciphers <]")
 	for item in generic_ecdsa_cipherlist:
-		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4444 -cipher {} -cert server-ecdsa.cert -key server-ecdsa.key > ./results/s-time_{}_`ls ./results/s-time_{}_* | wc -l`.txt 2>&1'".format(item, item, item)
+		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4444 -cipher {0} -cert server-ecdsa.cert -key server-ecdsa.key -time {1} > ./results/s-time_{0}_`ls ./results/s-time_{0}_* | wc -l`.txt 2>&1'".format(item, duration)
 		
 		print("\n[ Running benchmarks for [{}] for 60 seconds ]".format(item))
 #		print(command)
 		os.system(command)
 	
 		print("[ Sleeping for 70 seconds ]") 
-		time.sleep(70)	
+		time.sleep(sleep)
 
 	# Run benchmarks for generic [4445] DH-DSS ciphers.
 	print("\n[> Running tests for generic_dh_dss_ciphers <]")
 	for item in generic_dh_dss_cipherlist:
-		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4445 -cipher {} -cert server-dh-dss-cert.cert -key server-dh-dss-key.pem > ./results/s-time_{}_`ls ./results/s-time_{}_* | wc -l`.txt 2>&1'".format(item, item, item)
+		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4445 -cipher {0} -cert server-dh-dss-cert.cert -key server-dh-dss-key.pem -time {1} > ./results/s-time_{0}_`ls ./results/s-time_{0}_* | wc -l`.txt 2>&1'".format(item, duration)
 
 		print("\n[ Running benchmarks for [{}] for 60 seconds ]".format(item))
 #		print(command)
@@ -277,7 +281,7 @@ def run_client():
 	# Run benchmarks for generic [4446] DHE-DSS/EDH-DSS ciphers.
 	print("\n[> Running tests for generic_dhe_dss_ciphers <]")
 	for item in generic_dhe_dss_cipherlist:
-		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4446 -cipher {} -cert server-dss-cert.cert -key server-dss-key.pem > ./results/s-time_{}_`ls ./results/s-time_{}_* | wc -l`.txt 2>&1'".format(item, item, item)
+		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4446 -cipher {0} -cert server-dss-cert.cert -key server-dss-key.pem -time {1} > ./results/s-time_{0}_`ls ./results/s-time_{0}_* | wc -l`.txt 2>&1'".format(item, duration)
 		
 		print("\n[ Running benchmarks for [{}] for 60 seconds ]".format(item))
 #		print(command)
@@ -289,7 +293,7 @@ def run_client():
 	# Run benchmarks for generic [4447] DH-RSA ciphers.
 	print("\n[> Running tests for generic_dh_rsa_ciphers <]")
 	for item in generic_dh_rsa_cipherlist:
-		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4447 -cipher {} -cert server-dh-cert.cert -key server-dh-key.pem > ./results/s-time_{}_`ls ./results/s-time_{}_* | wc -l`.txt 2>&1'".format(item, item, item)
+		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4447 -cipher {0} -cert server-dh-rsa-cert.cert -key server-dh-rsa-key.pem -time {1} > ./results/s-time_{0}_`ls ./results/s-time_{0}_* | wc -l`.txt 2>&1'".format(item, duration)
 
 		print("\n[ Running benchmarks for [{}] for 60 seconds ]".format(item))
 #		print(command)
@@ -301,7 +305,7 @@ def run_client():
 	# Run benchmark for generic [4448] ECDH-RSA ciphers.
 	print("\n[> Running tests for generic_ecdh_rsa_ciphers <]")
 	for item in generic_ecdh_rsa_cipherlist:
-		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4448 -cipher {} -cert server-ecdh-cert.cert -key server-ecdh-key.pem > ./results/s-time_{}_`ls ./results/s-time_{}_* | wc -l`.txt 2>&1'".format(item, item, item)
+		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4448 -cipher {0} -cert server-ecdh-cert.cert -key server-ecdh-key.pem -time {1} > ./results/s-time_{0}_`ls ./results/s-time_{0}_* | wc -l`.txt 2>&1'".format(item, duration)
 
 		print("\n[ Running benchmarks for [{}] for 60 seconds ]".format(item))
 #		print(command)
@@ -313,14 +317,14 @@ def run_client():
 	# Run benchmarks for generic [4449] RSA ciphers.
 	print("\n[> Running tests for generic_rsa_ciphers <]")
 	for item in generic_rsa_cipherlist:
-		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4449 -cipher {} -cert server-rsa-cert.pem > ./results/s-time_{}_`ls ./results/s-time_{}_* | wc -l`.txt 2>&1'".format(item, item, item)
+		command = "docker exec -i -t -d benchmark-container bash -c 'openssl/apps/openssl s_time -connect localhost:4449 -cipher {0} -cert server-rsa-cert.pem -time {1} > ./results/s-time_{0}_`ls ./results/s-time_{0}_* | wc -l`.txt 2>&1'".format(item, duration)
 	
 		print("\n[ Running benchmarks for [{}] for 60 seconds ]".format(item))
 #		print(command)
 		os.system(command)
 	
 		print("[ Sleeping for 70 seconds ]") 
-		time.sleep(70)
+		time.sleep(sleep)
 
 	return
 
