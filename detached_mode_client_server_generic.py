@@ -249,10 +249,10 @@ def run_client():
 	# Debug mode
 
 	# Default = 30
-	duration = 1
+	duration = 30
 
 	# Default = 70
-	sleep = 2
+	sleep = 70
 
 	# Run benchmarks for generic [4444] ECDSA ciphers.
 	print("\n[> Running tests for generic_ecdsa_ciphers <]")
@@ -276,7 +276,7 @@ def run_client():
 		os.system(command)
 
 		print("[ Sleeping for 70 seconds ]")
-		time.sleep(70)
+		time.sleep(sleep)
 
 	# Run benchmarks for generic [4446] DHE-DSS/EDH-DSS ciphers.
 	print("\n[> Running tests for generic_dhe_dss_ciphers <]")
@@ -288,7 +288,7 @@ def run_client():
 		os.system(command)
 
 		print("[ Sleeping for 70 seconds]") 
-		time.sleep(70)
+		time.sleep(sleep)
 
 	# Run benchmarks for generic [4447] DH-RSA ciphers.
 	print("\n[> Running tests for generic_dh_rsa_ciphers <]")
@@ -300,7 +300,7 @@ def run_client():
 		os.system(command)
 	
 		print("[ Sleeping for 70 seconds ]")
-		time.sleep(70)
+		time.sleep(sleep)
 
 	# Run benchmark for generic [4448] ECDH-RSA ciphers.
 	print("\n[> Running tests for generic_ecdh_rsa_ciphers <]")
@@ -312,7 +312,7 @@ def run_client():
 		os.system(command)
 	
 		print("[ Sleeping for 70 seconds ]")
-		time.sleep(70)
+		time.sleep(sleep)
 
 	# Run benchmarks for generic [4449] RSA ciphers.
 	print("\n[> Running tests for generic_rsa_ciphers <]")
