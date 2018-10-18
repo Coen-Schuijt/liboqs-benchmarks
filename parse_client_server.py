@@ -31,18 +31,19 @@ try:
 	if output_loc == "generic":
 		loc_file = "./.docker_volume_generic.loc"
 		results_name = "./results-generic.csv"
-		total_con_name = "Total_Connections_results-generic.png"
-		con_per_sec_name = "Connections_persec_results-generic.png"
+		total_con_name = "Total_Connections_results_generic.png"
+		con_per_sec_name = "Connections_persec_results_generic.png"
 
 	elif output_loc == "liboqs":
 		loc_file = "./.docker_volume_liboqs.loc"
 		results_name = "./results-liboqs.csv"
-		total_con_name = "Total_Connections_results-liboqs.png"
-		con_per_sec_name = "Connections_persec_results-liboqs.png"
+		total_con_name = "Total_Connections_results_liboqs.png"
+		con_per_sec_name = "Connections_persec_results_liboqs.png"
 	else:
-		print("Incorrect directory specified.\nPlease choose one of the following:\n- generic\n- liboqs")
+		sys.exit(1)
+
 except:
-	print("No file directory specified.\nPlease choose one of the following:\n- generic\n- liboqs")
+	print("Incorrect directory specified.\nusage: ./parse_client_server.py [liboqs | generic]")
 	sys.exit(1)
 
 def create_dataframe(data):
@@ -82,6 +83,7 @@ def worker_module():
 			# Strip prefix and suffix. Grab the benchmark_number
 			entry_no_prefix = entry.strip("s-time_")
 			entry_clean = entry_no_prefix.strip(".txt")
+			entry_clean = entry_clean[:-2]
 			benchmark_number = entry_clean[-1:]
 
 			# Open each of the files
@@ -151,37 +153,34 @@ def plot_results():
 	This function takes the results.csv file and plots the data.
 	"""
 
-#	for file in os.listdir('./'):
-#		if file.startswith('results') and file.endswith('.csv'):
+	plt.style.use('seaborn-darkgrid')
+#	print(plt.style.available)
 
-	#read the csv file
+	# Read the csv file
 	df = pd.read_csv(results_name)
 	
-	#Group by name and get the mean
+	# Group by name and get the mean
 	df = df.groupby("Cipher").mean().reset_index()
 
-	#sorts the values of the file
+	# Sort the values of the file
 	sort_by_connection = df.sort_values('Connections_sidr',ascending=False)
-	sort_by_conpersec = df.sort_values("Connections_user_second_sidr")
+	sort_by_conpersec = df.sort_values("Connections_user_second_sidr", ascending=False)
 
-	#fix size 
+	# Fix size 
 	fig = plt.figure(1)
 
-	#Set a name for the supertittle
+	# Set a name for the supertittle
 	fig.suptitle("Total Connections Per Cipher with Sidr")
 
-	#set window size. Hardcoded
+	# Set window size. Hardcoded
 	fig.set_size_inches(18.5,10.5)
 
-	#fig.set_size_inches(18.5,15.5)
-	plt.bar(sort_by_connection.Cipher,sort_by_connection.Connections_sidr,align='edge',color="rgbky")
-
+	plt.bar(sort_by_connection.Cipher,sort_by_connection.Connections_sidr)
+	
 	#adjust the left margin so that all algorithms are visible
 	plt.subplots_adjust(bottom=0.25)
-	plt.ylim(75000,110000)
-	plt.xticks(rotation=90, fontsize=6)
+	plt.xticks(rotation=90, fontsize=15)
 
-	#plt.yticks(fontsize=5)
 	#I use figures to save and to put suptitle to the plot
 	fig.savefig(total_con_name)
 
@@ -191,19 +190,22 @@ def plot_results():
 	fig.suptitle("Connections per cipher/user per Second with Sidr")
 
 	#fig.set_size_inches(18.5,10.5)
-	fig.set_size_inches(18.5,15.5)
+	fig.set_size_inches(18.5,10.5)
 
 	#plot a bargraph on y-axis
-	plt.bar(sort_by_conpersec.Cipher,sort_by_conpersec.Connections_user_second_sidr,color="rgbky")
-
+	plt.bar(sort_by_conpersec.Cipher,sort_by_conpersec.Connections_user_second_sidr)
+	
 	#adjust the left margin so that all algorithms are visible
 	plt.subplots_adjust(bottom=0.25)
-	plt.ylim(8000,17000)
 
 	#change the font size in x-axis
-	plt.xticks(rotation=90, fontsize=6)
+	plt.xticks(rotation=90, fontsize=15)
 	plt.show()
+	
+	#input("Press any key to close the graphs and exit the script ... ")
 		
+	plt.close()
+
 	fig.savefig(con_per_sec_name)
 
 	#print the results on terminal. 
