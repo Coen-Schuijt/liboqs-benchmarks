@@ -162,54 +162,197 @@ def plot_results():
 	# Group by name and get the mean
 	df = df.groupby("Cipher").mean().reset_index()
 
+
+	signature_algorithms_list=["rsa","qteslaI_","qteslaIIIsize","qteslaIIIspeed","picnic"]
 	# Sort the values of the file
-	sort_by_connection = df.sort_values('Connections_sidr',ascending=False)
-	sort_by_conpersec = df.sort_values("Connections_user_second_sidr", ascending=False)
+#	rsa_signature_algo = df[df["Cipher"].str.contains("rsa")]
+
+
+
+	sort_by_connection_no_sidr = df.sort_values('Connections_no_sidr',ascending=False)
+	sort_by_conpersec_no_sidr = df.sort_values("Connections_user_second_no_sidr", ascending=False)
+
+	sort_by_connection_sidr = df.sort_values('Connections_sidr',ascending=False)
+	sort_by_conpersec_sidr = df.sort_values("Connections_user_second_sidr", ascending=False)
+	print(type(sort_by_conpersec_sidr))
+
+
+	#FIGURE 1 TOTAL CONNECTIONS PER CIPHER WITH SIDR
 
 	# Fix size 
 	fig = plt.figure(1)
-
 	# Set a name for the supertittle
 	fig.suptitle("Total Connections Per Cipher with Sidr")
-
 	# Set window size. Hardcoded
 	fig.set_size_inches(18.5,10.5)
-
-	plt.bar(sort_by_connection.Cipher,sort_by_connection.Connections_sidr)
-	
+	plt.bar(sort_by_connection_sidr.Cipher,sort_by_connection_sidr.Connections_sidr)
+	#Set label for the y-axis
+	plt.ylabel('No of Total Connections')
 	#adjust the left margin so that all algorithms are visible
 	plt.subplots_adjust(bottom=0.25)
 	plt.xticks(rotation=90, fontsize=15)
-
+	#Set label for the x-axis
+	plt.xlabel("Algorithm Name")
 	#I use figures to save and to put suptitle to the plot
-	fig.savefig(total_con_name)
+	fig.savefig(total_con_name)	
+#	os.system("eog {}".format(total_con_name))
+
+
+	#FIGURE 2 CONNECTIONS PER CIPHER/USER_SECONDS WITH SIDR
 
 	fig = plt.figure(2)
-
 	#Set a name for the supertittle
-	fig.suptitle("Connections per cipher/user per Second with Sidr")
-
+	fig.suptitle("Connections of each Cipher per user seconds with Sidr")
 	#fig.set_size_inches(18.5,10.5)
 	fig.set_size_inches(18.5,10.5)
-
 	#plot a bargraph on y-axis
-	plt.bar(sort_by_conpersec.Cipher,sort_by_conpersec.Connections_user_second_sidr)
-	
+	plt.bar(sort_by_conpersec_sidr.Cipher,sort_by_conpersec_sidr.Connections_user_second_sidr)
 	#adjust the left margin so that all algorithms are visible
 	plt.subplots_adjust(bottom=0.25)
-
+	#Set label for the y-axis
+	plt.ylabel('No of Connections')
 	#change the font size in x-axis
 	plt.xticks(rotation=90, fontsize=15)
-	plt.show()
-	
-	#input("Press any key to close the graphs and exit the script ... ")
-		
-	plt.close()
+	#Set label for the x-axis
+	plt.xlabel("Algorithm Name")
+#	fig.savefig(con_per_sec_name)
+#	os.system("eog {}".format(con_per_sec_name))
 
-	fig.savefig(con_per_sec_name)
 
-	#print the results on terminal. 
-#	print(df)
+	#FIGURE 3-7 CONNECTIONS PER CIPHER/USER SECOND WITH SIDR
+
+	for e,item in enumerate(signature_algorithms_list):
+		signature_algo = df[df["Cipher"].str.contains(item)]
+		fig = plt.figure(e+3)
+		#Set a name for the supertittle
+		fig.suptitle("Connections per 30 seconds in user mode")
+		#fig.set_size_inches(18.5,10.5)
+		fig.set_size_inches(18.5,10.5)
+		#plot a bargraph on y-axis
+		plt.bar(signature_algo.Cipher,signature_algo.Connections_user_second_sidr)
+		#adjust the left margin so that all algorithms are visible
+		plt.subplots_adjust(bottom=0.25)
+		#Set label for the y-axis
+		plt.ylabel('No of Connections')
+		#change the font size in x-axis
+		plt.xticks(rotation=90, fontsize=15)
+		#Set label for the x-axis
+		plt.xlabel("Algorithm Name")
+		fig.savefig("{1}_{0}".format(con_per_sec_name,item))
+		os.system("eog {1}_{0}".format(con_per_sec_name,item))	
+
+	#FIGURE 8 CONNECTIONS PER CIPHER/USER_SECOND WITH SIDR
+	for e,item in enumerate(signature_algorithms_list):
+		signature_algo = df[df["Cipher"].str.contains(item)]
+		fig = plt.figure(8)
+		#Set a name for the supertittle
+		fig.suptitle("Connections per cipher/user per Second with Sidr")
+		#fig.set_size_inches(18.5,10.5)
+		fig.set_size_inches(18.5,10.5)
+		#plot a bargraph on y-axis
+		plt.bar(signature_algo.Cipher,signature_algo.Connections_user_second_sidr)
+		#adjust the left margin so that all algorithms are visible
+		plt.subplots_adjust(bottom=0.25)
+		#Set label for the y-axis
+		plt.ylabel('No of Connections')
+		#change the font size in x-axis
+		plt.xticks(rotation=90, fontsize=15)
+		#Set label for the x-axis
+		plt.xlabel("Algorithm Name")
+		fig.savefig("all_signatures_sidr.png")
+		os.system("eog all_signatures_sidr.png")
+
+#--------------------------NO SIDR ------------------------------------------#
+
+	#FIGURE 9 TOTAL CONNECTIONS PER CIPHER WITH NO SIDR
+
+	# Fix size 
+	fig = plt.figure(9)
+	# Set a name for the supertittle
+	fig.suptitle("Total Connections Per Cipher without Sidr")
+	# Set window size. Hardcoded
+	fig.set_size_inches(18.5,10.5)
+	plt.bar(sort_by_connection_no_sidr.Cipher,sort_by_connection_no_sidr.Connections_no_sidr)
+	#Set label for the y-axis
+	plt.ylabel('No of Total Connections')
+	#adjust the left margin so that all algorithms are visible
+	plt.subplots_adjust(bottom=0.25)
+	plt.xticks(rotation=90, fontsize=15)
+	#Set label for the x-axis
+	plt.xlabel("Algorithm Name")
+	#I use figures to save and to put suptitle to the plot
+	fig.savefig(total_con_name)	
+#	os.system("eog {}".format(total_con_name))
+
+
+	#FIGURE 10 CONNECTIONS PER CIPHER/USER_SECONDS WITH NO SIDR
+
+	fig = plt.figure(10)
+	#Set a name for the supertittle
+	fig.suptitle("Connections of each Cipher per user seconds without Sidr")
+	#fig.set_size_inches(18.5,10.5)
+	fig.set_size_inches(18.5,10.5)
+	#plot a bargraph on y-axis
+	plt.bar(sort_by_conpersec_no_sidr.Cipher,sort_by_conpersec_no_sidr.Connections_user_second_no_sidr)
+	#adjust the left margin so that all algorithms are visible
+	plt.subplots_adjust(bottom=0.25)
+	#Set label for the y-axis
+	plt.ylabel('No of Connections')
+	#change the font size in x-axis
+	plt.xticks(rotation=90, fontsize=15)
+	#Set label for the x-axis
+	plt.xlabel("Algorithm Name")
+#	fig.savefig(con_per_sec_name)
+#	os.system("eog {}".format(con_per_sec_name))
+
+
+	#FIGURE 11-15 CONNECTIONS PER CIPHER/USER SECOND WITH NO SIDR
+
+	for e,item in enumerate(signature_algorithms_list):
+		signature_algo = df[df["Cipher"].str.contains(item)]
+		fig = plt.figure(e+11)
+		#Set a name for the supertittle
+		fig.suptitle("Connections per 30 seconds in user mode without Sidr")
+		#fig.set_size_inches(18.5,10.5)
+		fig.set_size_inches(18.5,10.5)
+		#plot a bargraph on y-axis
+		plt.bar(signature_algo.Cipher,signature_algo.Connections_user_second_no_sidr)
+		#adjust the left margin so that all algorithms are visible
+		plt.subplots_adjust(bottom=0.25)
+		#Set label for the y-axis
+		plt.ylabel('No of Connections')
+		#change the font size in x-axis
+		plt.xticks(rotation=90, fontsize=15)
+		#Set label for the x-axis
+		plt.xlabel("Algorithm Name")
+		fig.savefig("{1}_no_sidr_{0}".format(con_per_sec_name,item))
+		os.system("eog {1}_no_sidr_{0}".format(con_per_sec_name,item))	
+
+	#FIGURE 16 CONNECTIONS PER CIPHER/USER_SECOND WITH NO SIDR
+	for e,item in enumerate(signature_algorithms_list):
+		signature_algo = df[df["Cipher"].str.contains(item)]
+		fig = plt.figure(16)
+		#Set a name for the supertittle
+		fig.suptitle("Connections of each Cipher per user seconds without Sidr")
+		#fig.set_size_inches(18.5,10.5)
+		fig.set_size_inches(18.5,10.5)
+		#plot a bargraph on y-axis
+		plt.bar(signature_algo.Cipher,signature_algo.Connections_user_second_no_sidr)
+		#adjust the left margin so that all algorithms are visible
+		plt.subplots_adjust(bottom=0.25)
+		#Set label for the y-axis
+		plt.ylabel('No of Connections')
+		#change the font size in x-axis
+		plt.xticks(rotation=90, fontsize=15)
+		#Set label for the x-axis
+		plt.xlabel("Algorithm Name")
+		fig.savefig("all_signatures_without_sidr.png")
+		os.system("eog all_signatures_without_sidr.png")
+
+
+
+
+
 
 if __name__ == "__main__":
 	"""
