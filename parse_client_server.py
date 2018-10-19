@@ -30,13 +30,13 @@ try:
 
 	if output_loc == "generic":
 		loc_file = "./.docker_volume_generic.loc"
-		results_name = "./results-generic.csv"
+		results_name = "./results_generic.csv"
 		total_con_name = "Total_Connections_results_generic.png"
 		con_per_sec_name = "Connections_persec_results_generic.png"
 
 	elif output_loc == "liboqs":
 		loc_file = "./.docker_volume_liboqs.loc"
-		results_name = "./results-liboqs.csv"
+		results_name = "./results_liboqs.csv"
 		total_con_name = "Total_Connections_results_liboqs.png"
 		con_per_sec_name = "Connections_persec_results_liboqs.png"
 	else:
