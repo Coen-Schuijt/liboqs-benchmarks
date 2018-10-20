@@ -104,13 +104,8 @@ def run_client():
 	# Run the actual benchmarks
 	print("\n[> Running tests for liboqs non_ecdsa_ciphers <]")
 
-	# Debug mode
-
 	# Default = 30
 	duration = 30
-
-	# Default = 70
-	sleep = 70
 
 	# For each signature algorithm ...
 	for e, sig_alg in enumerate(sig_algs):
