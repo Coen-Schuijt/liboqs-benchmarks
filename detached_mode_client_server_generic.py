@@ -179,13 +179,8 @@ def run_client():
 	print("\n[ Creating generic ECDSA cipherlist ]\n{}".format(generic_ecdsa_cipherlist))
 	print("\n[ Creating generic RSA cipherlist ]\n{}".format(generic_rsa_cipherlist))
 
-	# Debug mode
-
 	# Default = 30
 	duration = 30
-
-	# Default = 70
-	sleep = 70
 
 	# Run benchmarks for generic [4444] ECDSA ciphers.
 	print("\n[> Running tests for generic_ecdsa_ciphers <]")
@@ -197,7 +192,7 @@ def run_client():
 		os.system(command)
 	
 		print("[ Sleeping for 70 seconds ]") 
-		time.sleep(sleep)
+		time.sleep(70)
 
 	# Run benchmarks for generic [4445] RSA ciphers.
 	print("\n[> Running tests for generic_rsa_ciphers <]")
@@ -209,7 +204,7 @@ def run_client():
 		os.system(command)
 	
 		print("[ Sleeping for 70 seconds ]") 
-		time.sleep(sleep)
+		time.sleep(70)
 
 	return
 
