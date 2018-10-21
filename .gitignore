@@ -3,10 +3,6 @@
 .docker_volume.loc
 results-generic.csv
 results-liboqs.csv
-Connections_persec_results_generic.png
-Connections_persec_results_liboqs.png
-Total_Connections_results_generic.png
-Total_Connections_results_liboqs.png
 liboqs_png/
 generic_png/
 generics/
