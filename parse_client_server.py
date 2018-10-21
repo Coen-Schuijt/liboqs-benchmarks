@@ -93,12 +93,12 @@ def worker_module():
 		
 		# Parse s-time results
 		if entry.startswith("s-time"):
-		
+			
 			# Strip prefix and suffix. Grab the benchmark_number
-			entry_no_prefix = entry.strip("s-time_")
-			entry_clean = entry_no_prefix.strip(".txt")
-			entry_clean = entry_clean[:-2]
-			benchmark_number = entry_clean[-1:]
+			entry_no_prefix = entry[7:] 
+			entry_no_suffix = entry_no_prefix.strip(".txt")
+			entry_clean = entry_no_suffix[:-2]
+			benchmark_number = entry_no_suffix[-1:]
 
 			# Open each of the files
 			with open(vol_loc_clean + '/' + entry, 'r') as f:
