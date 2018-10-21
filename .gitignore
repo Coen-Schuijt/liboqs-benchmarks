@@ -5,4 +5,4 @@ results-generic.csv
 results-liboqs.csv
 liboqs_png/
 generic_png/
-generics/
+detached_mode_client_server_liboqs.py
