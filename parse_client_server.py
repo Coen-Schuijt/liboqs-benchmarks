@@ -29,34 +29,30 @@ try:
 	output_loc = sys.argv[1]
 
 	if output_loc == "generic":
+		path = "./generic_png/"
+		if not os.path.exists(path):
+			os.makedirs(path)
 		loc_file = "./.docker_volume_generic.loc"
-<<<<<<< HEAD
 		results_name = "./results-generic.csv"
 		total_con_name = "Total_Connections_results_generic_sidr.png"
 		con_per_sec_name = "Connections_persec_results_generic_sidr.png"
 		total_con_name_no_sidr = "Total_Connections_results_generic_no_sird.png"
 		con_per_sec_name_no_sidr = "Connections_persec_results_generic_no_sird.png"
+		signature_algorithms_list=["rsa","ECDSA"]
 
 
 	elif output_loc == "liboqs":
+		path = "./liboqs_png/"
+		if not os.path.exists(path):
+			os.makedirs(path)
 		loc_file = "./.docker_volume_liboqs.loc"
 		results_name = "./results-liboqs.csv"
 		total_con_name = "Total_Connections_results_liboqs_sidr.png"
 		con_per_sec_name = "Connections_persec_results_liboqs_sidr.png"
-		total_con_name_no_sidr = "Total_Connections_results_generic_no_sird.png"
-		con_per_sec_name_no_sidr = "Connections_persec_results_generic_no_sird.png"
+		total_con_name_no_sidr = "Total_Connections_results_liboqs_no_sird.png"
+		con_per_sec_name_no_sidr = "Connections_persec_results_liboqs_no_sird.png"
+		signature_algorithms_list=["rsa","qteslaI_","qteslaIIIsize","qteslaIIIspeed","picnic"]
 
-=======
-		results_name = "./results_generic.csv"
-		total_con_name = "Total_Connections_results_generic.png"
-		con_per_sec_name = "Connections_persec_results_generic.png"
-
-	elif output_loc == "liboqs":
-		loc_file = "./.docker_volume_liboqs.loc"
-		results_name = "./results_liboqs.csv"
-		total_con_name = "Total_Connections_results_liboqs.png"
-		con_per_sec_name = "Connections_persec_results_liboqs.png"
->>>>>>> 2de3baf8535687f2a2771afba24a0159d8f01805
 	else:
 		sys.exit(1)
 
@@ -181,7 +177,6 @@ def plot_results():
 	df = df.groupby("Cipher").mean().reset_index()
 
 
-	signature_algorithms_list=["rsa","qteslaI_","qteslaIIIsize","qteslaIIIspeed","picnic"]
 	# Sort the values of the file
 	sort_by_connection_no_sidr = df.sort_values('Connections_no_sidr',ascending=False)
 	sort_by_conpersec_no_sidr = df.sort_values("Connections_user_second_no_sidr", ascending=False)
@@ -207,7 +202,7 @@ def plot_results():
 	#Set label for the x-axis
 	plt.xlabel("Algorithm Name")
 	#I use figures to save and to put suptitle to the plot
-	fig.savefig(total_con_name)	
+	fig.savefig(path+total_con_name)	
 #	os.system("eog {}".format(total_con_name))
 
 
@@ -228,7 +223,7 @@ def plot_results():
 	plt.xticks(rotation=90, fontsize=15)
 	#Set label for the x-axis
 	plt.xlabel("Algorithm Name")
-	fig.savefig(con_per_sec_name)
+	fig.savefig(path+con_per_sec_name)
 #	os.system("eog {}".format(con_per_sec_name))
 
 
@@ -251,7 +246,7 @@ def plot_results():
 		plt.xticks(rotation=90, fontsize=15)
 		#Set label for the x-axis
 		plt.xlabel("Algorithm Name")
-		fig.savefig("{1}_{0}".format(con_per_sec_name,item))
+		fig.savefig("{2}{1}_{0}".format(con_per_sec_name,item,path))
 #		os.system("eog {1}_{0}".format(con_per_sec_name,item))	
 
 	#FIGURE 8 CONNECTIONS PER CIPHER/USER_SECOND WITH SIDR- WITH DIFFERENT COLORS FOR EACH SIGNATURE ALGORITHM
@@ -273,7 +268,7 @@ def plot_results():
 		#Set label for the x-axis
 		plt.xlabel("Algorithm Name")
 		if item==signature_algorithms_list[-1]:
-			fig.savefig("all_signatures_sidr.png")
+			fig.savefig("{}all_signatures_sidr.png".format(path))
 #			os.system("eog all_signatures_sidr.png")
 
 #--------------------------NO SIDR ------------------------------------------#
@@ -295,7 +290,7 @@ def plot_results():
 	#Set label for the x-axis
 	plt.xlabel("Algorithm Name")
 	#I use figures to save and to put suptitle to the plot
-	fig.savefig(total_con_name_no_sidr)	
+	fig.savefig(path+total_con_name_no_sidr)	
 #	os.system("eog {}".format(total_con_name))
 
 
@@ -316,7 +311,7 @@ def plot_results():
 	plt.xticks(rotation=90, fontsize=15)
 	#Set label for the x-axis
 	plt.xlabel("Algorithm Name")
-	fig.savefig(con_per_sec_name_no_sidr)
+	fig.savefig(path+con_per_sec_name_no_sidr)
 #	os.system("eog {}".format(con_per_sec_name))
 
 
@@ -339,7 +334,7 @@ def plot_results():
 		plt.xticks(rotation=90, fontsize=15)
 		#Set label for the x-axis
 		plt.xlabel("Algorithm Name")
-		fig.savefig("{1}_no_sidr_{0}".format(con_per_sec_name_no_sidr,item))
+		fig.savefig("{2}{1}_{0}".format(con_per_sec_name_no_sidr,item,path))
 #		os.system("eog {1}_no_sidr_{0}".format(con_per_sec_name_no_sidr,item))	
 
 	#FIGURE 16 CONNECTIONS PER CIPHER/USER_SECOND WITH NO SIDR- WITH DIFFERENT COLORS FOR EACH SIGNATURE ALGORITHM
@@ -361,7 +356,7 @@ def plot_results():
 		#Set label for the x-axis
 		plt.xlabel("Algorithm Name")
 		if item==signature_algorithms_list[-1]:
-			fig.savefig("all_signatures_without_sidr.png")
+			fig.savefig("{}all_signatures_without_sidr.png".format(path))
 #			os.system("eog all_signatures_without_sidr.png")
 
 
