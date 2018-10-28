@@ -22,7 +22,7 @@ def initialyse():
 	# Create a volume to store results locally.
 	print("\n[ Creating docker volume ]")
 	os.system("docker volume create benchmark-results-speed")
-        os.system("docker volume inspect --format '{{ .Mountpoint }}' benchmark-results-speed > ./.docker_volume_speed.loc")
+	os.system("docker volume inspect --format '{{ .Mountpoint }}' benchmark-results-speed > ./.docker_volume_speed.loc")
 
 	# Start the docker container (detached).
 	print("\n[ Running docker container ]")
